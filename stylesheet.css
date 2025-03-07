@@ -1,24 +1,36 @@
-.bitcoin-container {
-    margin-left: 8px;
-    padding: 0 4px;
-}
-
+/* Основной текст */
 .bitcoin-price {
     color: #ffffff;
     font-size: 12pt;
 }
 
+/* Разделитель */
+.separator-label {
+    color: #1BD96A;
+    font-size: 12pt;
+    margin: 0 2px;
+}
+
+/* Положительное изменение */
 .positive-change {
-    color: #8ff0a4;
+    color: #4CAF50;
     font-size: 12pt;
 }
 
+/* Отрицательное изменение */
 .negative-change {
-    color: #ff7b7b;
+    color: #F44336;
     font-size: 12pt;
 }
 
+/* Состояние ошибки */
 .bitcoin-error {
     color: #ffffff;
-    opacity: 0.6;
+    opacity: 0.7;
+    font-size: 12pt;
+}
+
+/* Контейнер */
+.bitcoin-container {
+    margin-left: 8px;
 }
