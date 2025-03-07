@@ -11,6 +11,7 @@ export default class BitcoinExtension {
         this._panelButton = null;
         this._session = new Soup.Session();
         this._timeoutId = null;
+        this._isErrorState = false;  // Для отслеживания ошибки
     }
 
     _updateData() {
@@ -27,6 +28,11 @@ export default class BitcoinExtension {
                 try {
                     const bytes = session.send_and_read_finish(result);
                     const response = JSON.parse(new TextDecoder().decode(bytes.get_data()));
+
+                    if (!response.bitcoin) {
+                        throw new Error('Invalid response format');
+                    }
+
                     const price = response.bitcoin.usd.toLocaleString('en-US', {
                         style: 'currency',
                         currency: 'USD',
@@ -34,10 +40,10 @@ export default class BitcoinExtension {
                     });
                     const change = response.bitcoin.usd_24h_change.toFixed(2);
                     const isPositive = change >= 0;
-                    
+
                     if (this._panelButton) {
                         const container = new St.BoxLayout({ vertical: false });
-                        
+
                         const priceLabel = new St.Label({
                             style_class: 'bitcoin-price',
                             text: `BTC = ${price}`,
@@ -62,18 +68,36 @@ export default class BitcoinExtension {
 
                         this._panelButton.set_child(container);
                     }
+
+                    // Если успешное обновление, возвращаем к интервалу 3 минуты
+                    if (this._isErrorState) {
+                        this._isErrorState = false;
+                        this._scheduleNextUpdate(180);  // Каждые 3 минуты
+                    }
+
                 } catch (e) {
                     log(`Error fetching Bitcoin price: ${e.message}`);
+                    if (this._panelButton) {
+                        this._panelButton.set_child(new St.Label({
+                            text: 'Soon',
+                            style_class: 'error-text',
+                            y_align: Clutter.ActorAlign.CENTER
+                        }));
+                    }
+
+                    // Если ошибка, обновляем каждую 7 секунд
+                    this._isErrorState = true;
+                    this._scheduleNextUpdate(7);
                 }
             }
         );
     }
 
-    _scheduleNextUpdate() {
+    _scheduleNextUpdate(interval) {
         if (this._timeoutId) {
             GLib.Source.remove(this._timeoutId);
         }
-        this._timeoutId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 180, () => {
+        this._timeoutId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, interval, () => {
             this._updateData();
             return GLib.SOURCE_CONTINUE;
         });
@@ -99,7 +123,7 @@ export default class BitcoinExtension {
         }
 
         this._updateData();
-        this._scheduleNextUpdate();
+        this._scheduleNextUpdate(180);  // Начать с обновления каждые 3 минуты
     }
 
     disable() {
