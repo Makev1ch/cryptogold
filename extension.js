@@ -96,14 +96,14 @@ export default class BitcoinExtension {
 
             this._panelButton.set_child(box);
 
-            if (this._panelButton.has_style_class_name('button-pressed')) {
-                this._panelButton.add_style_class_name('fade-out');
-                GLib.timeout_add(GLib.PRIORITY_DEFAULT, 300, () => {
-                    this._panelButton.remove_style_class_name('button-pressed');
-                    this._panelButton.remove_style_class_name('fade-out');
-                    return GLib.SOURCE_REMOVE;
-                });
-            }
+            // Добавляем анимацию символа "-" при обновлении
+            priceLabel.add_style_class_name('update-animation');
+
+            // Убираем анимацию через секунду
+            GLib.timeout_add(GLib.PRIORITY_DEFAULT, 1000, () => {
+                priceLabel.remove_style_class_name('update-animation');
+                return GLib.SOURCE_REMOVE;
+            });
 
             if (this._isErrorState) {
                 this._isErrorState = false;
@@ -121,8 +121,7 @@ export default class BitcoinExtension {
 
     async _onClick() {
         if (this._isFetching) return Clutter.EVENT_STOP;
-        
-        this._panelButton.add_style_class_name('button-pressed');
+
         await this._updateData();
         this._scheduleNextUpdate(180);
         return Clutter.EVENT_STOP;
