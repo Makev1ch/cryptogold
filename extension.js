@@ -145,10 +145,15 @@ export default class BitcoinExtension {
             this._timeoutId = null;
         }
 
+        // Добавляем стиль для нажатия
         this._panelButton.add_style_class_name('button-pressed');
+        
         await this._updateData();
+
+        // Сразу обновляем через 3 минуты
         this._scheduleNextUpdate(180);
 
+        // Убираем стиль через 200 мс (эффект нажатия)
         GLib.timeout_add(GLib.PRIORITY_DEFAULT, 200, () => {
             this._panelButton.remove_style_class_name('button-pressed');
             return GLib.SOURCE_REMOVE;
@@ -181,6 +186,7 @@ export default class BitcoinExtension {
             centerBox.add_child(this._panelButton);
         }
 
+        // Инициализируем данные при активации
         this._updateData();
     }
 
