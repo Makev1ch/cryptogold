@@ -45,27 +45,38 @@ export default class BitcoinExtension {
             const change = response.bitcoin.usd_24h_change.toFixed(2);
             const changeText = `${change}%`;
             
-            const label = new St.Label({
-                style_class: 'bitcoin-label',
-                text: `₿ ${price} (${changeText})`,
-                y_align: Clutter.ActorAlign.CENTER
+            // Создаем контейнер для текста
+            const box = new St.BoxLayout({ 
+                style_class: 'bitcoin-box',
+                vertical: false,
+                reactive: false 
             });
             
-            // Устанавливаем цвет в зависимости от изменения
-            if (change >= 0) {
-                label.style = 'color: #4CAF50;'; // Зеленый для роста
-            } else {
-                label.style = 'color: #F44336;'; // Красный для падения
-            }
+            // Основной текст (белый)
+            const priceLabel = new St.Label({
+                style_class: 'bitcoin-price',
+                text: `BTC ${price}`,
+                y_align: Clutter.ActorAlign.CENTER
+            });
 
-            this._panelButton.set_child(label);
+            // Изменение цены (цветное)
+            const changeLabel = new St.Label({
+                style_class: change >= 0 ? 'positive-change' : 'negative-change',
+                text: `| ${changeText}`,
+                y_align: Clutter.ActorAlign.CENTER
+            });
+
+            box.add_child(priceLabel);
+            box.add_child(changeLabel);
+
+            this._panelButton.set_child(box);
             this._scheduleNextUpdate(300);
         } catch (e) {
             console.error(`Error: ${e.message}`);
             
             this._panelButton.set_child(new St.Label({
-                style_class: 'error-label',
-                text: 'soon',
+                style_class: 'bitcoin-error',
+                text: 'BTC -- | --%',
                 y_align: Clutter.ActorAlign.CENTER
             }));
             this._scheduleNextUpdate(7);
@@ -74,18 +85,21 @@ export default class BitcoinExtension {
 
     enable() {
         this._panelButton = new St.Bin({
-            style_class: 'panel-button',
+            style_class: 'panel-button bitcoin-container',
             reactive: false
         });
         
-        // Добавляем в правую часть панели перед индикаторами системы
-        Main.panel._rightBox.insert_child_at_index(this._panelButton, 0);
+        // Вставляем после даты/времени в центральной панели
+        const centerBox = Main.panel._centerBox;
+        const dateMenu = Main.panel.statusArea.dateMenu;
+        centerBox.insert_child_after(this._panelButton, dateMenu.container);
+        
         this._updateData();
     }
 
     disable() {
         if (this._panelButton) {
-            Main.panel._rightBox.remove_child(this._panelButton);
+            Main.panel._centerBox.remove_child(this._panelButton);
             this._panelButton.destroy();
             this._panelButton = null;
         }
