@@ -11,10 +11,19 @@ export default class BitcoinExtension {
         this._panelButton = null;
         this._session = new Soup.Session();
         this._timeoutId = null;
-        this._isErrorState = false;  // Для отслеживания ошибки
+        this._isErrorState = false;
     }
 
     _updateData() {
+        if (this._panelButton) {
+            const loadingLabel = new St.Label({
+                text: 'BTC = Loading...',
+                style_class: 'loading-text',
+                y_align: Clutter.ActorAlign.CENTER
+            });
+            this._panelButton.set_child(loadingLabel);
+        }
+
         const message = Soup.Message.new(
             'GET',
             'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true'
@@ -69,10 +78,9 @@ export default class BitcoinExtension {
                         this._panelButton.set_child(container);
                     }
 
-                    // Если успешное обновление, возвращаем к интервалу 3 минуты
                     if (this._isErrorState) {
                         this._isErrorState = false;
-                        this._scheduleNextUpdate(180);  // Каждые 3 минуты
+                        this._scheduleNextUpdate(180);
                     }
 
                 } catch (e) {
@@ -85,7 +93,6 @@ export default class BitcoinExtension {
                         }));
                     }
 
-                    // Если ошибка, обновляем каждую 7 секунд
                     this._isErrorState = true;
                     this._scheduleNextUpdate(7);
                 }
@@ -123,7 +130,7 @@ export default class BitcoinExtension {
         }
 
         this._updateData();
-        this._scheduleNextUpdate(180);  // Начать с обновления каждые 3 минуты
+        this._scheduleNextUpdate(180);
     }
 
     disable() {
