@@ -4,5 +4,6 @@
     "description": "it just shows the rate of crypto gold(bitcoin)",
     "version": 1,
     "url": "https://github.com/makev1ch/cryptogold",
-    "shell-version": ["47"]
+    "shell-version": ["47"],
+    "stylesheet": "stylesheet.css"
 }
