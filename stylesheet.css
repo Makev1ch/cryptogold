@@ -1,1 +1,23 @@
+.bitcoin-container {
+    padding: 0 10px;
+}
 
+.bitcoin-price {
+    color: white;
+    font-weight: normal;
+}
+
+.separator-label {
+    color: #1BD96A;
+    font-weight: normal;
+}
+
+.positive-change {
+    color: #1BD96A;
+    font-weight: normal;
+}
+
+.negative-change {
+    color: #FF4C4C;
+    font-weight: normal;
+}
