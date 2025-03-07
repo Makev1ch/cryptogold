@@ -30,7 +30,7 @@ export default class BitcoinExtension extends Extension {
         this._session = new Soup.Session();
         this._isErrorState = false;
         this._updateData();
-        this._scheduleNextUpdate(180);
+        this._scheduleNextUpdate(180);  // Начинаем с интервала 3 минуты
     }
 
     disable() {
@@ -41,6 +41,7 @@ export default class BitcoinExtension extends Extension {
             GLib.Source.remove(this._timeoutId);
             this._timeoutId = null;
         }
+
         this._session = null;
     }
 
@@ -101,10 +102,21 @@ export default class BitcoinExtension extends Extension {
 
                     if (this._isErrorState) {
                         this._isErrorState = false;
-                        this._scheduleNextUpdate(180);
+                        this._scheduleNextUpdate(180);  // Устанавливаем интервал 3 минуты после успешного обновления
                     }
                 } catch (e) {
                     log(`Error fetching Bitcoin price: ${e.message}`);
+
+                    // В случае ошибки показываем "soon"
+                    if (this._panelButton) {
+                        this._panelButton.set_child(new St.Label({
+                            text: 'soon',
+                            style_class: 'error-text',
+                            y_align: Clutter.ActorAlign.CENTER
+                        }));
+                    }
+
+                    // В случае ошибки обновляем каждую 7 секунд
                     this._isErrorState = true;
                     this._scheduleNextUpdate(7);
                 }
