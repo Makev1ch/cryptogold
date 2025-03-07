@@ -1,8 +1,9 @@
 .bitcoin-container {
-    margin-left: 1px;
-    padding: 0 1px;
-    border-radius: 5px;
-    transition: background-color 0.2s ease-in-out;
+    margin-left: 3px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    background-color: rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
 }
 
 .bitcoin-container:active {
@@ -11,35 +12,41 @@
 
 .button-pressed {
     background-color: rgba(255, 255, 255, 0.3);
-    transition: background-color 0.1s ease-in-out;
+    transform: scale(0.95);
+}
+
+.fade-out {
+    transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+    background-color: transparent;
+    transform: scale(1);
 }
 
 .bitcoin-price {
     color: #ffffff;
     font-size: 12pt;
     font-weight: bold;
-    margin-right: 1px;
+    margin-right: 5px;
 }
 
 .separator-label {
     color: #1BD96A;
     font-size: 12pt;
     font-weight: bold;
-    margin: 0 1px;
+    margin: 0 5px;
 }
 
 .positive-change {
     color: #4CAF50;
     font-size: 12pt;
     font-weight: bold;
-    margin-left: 1px;
+    margin-left: 5px;
 }
 
 .negative-change {
     color: #F44336;
     font-size: 12pt;
     font-weight: bold;
-    margin-left: 1px;
+    margin-left: 5px;
 }
 
 .bitcoin-error {
