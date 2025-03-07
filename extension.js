@@ -11,6 +11,7 @@ export default class BitcoinExtension {
         this._panelButton = null;
         this._session = null;
         this._timeoutId = null;
+        this._isErrorState = false;
     }
 
     _scheduleNextUpdate(interval) {
@@ -42,7 +43,13 @@ export default class BitcoinExtension {
                 GLib.PRIORITY_DEFAULT,
                 null
             );
+            
             const response = JSON.parse(new TextDecoder().decode(bytes.get_data()));
+            
+            // Проверка корректности ответа
+            if (!response?.bitcoin?.usd || !response.bitcoin.usd_24h_change) {
+                throw new Error('Invalid API response format');
+            }
 
             const price = response.bitcoin.usd.toLocaleString('en-US', {
                 style: 'currency',
@@ -75,15 +82,26 @@ export default class BitcoinExtension {
             box.add_child(changeLabel);
 
             this._panelButton.set_child(box);
-            this._scheduleNextUpdate(300); // Обновление каждые 5 минут (300 секунд)
+            
+            // Если было состояние ошибки - сбрасываем
+            if (this._isErrorState) {
+                this._isErrorState = false;
+                this._scheduleNextUpdate(300);
+            } else {
+                this._scheduleNextUpdate(300);
+            }
+            
         } catch (e) {
             console.error(`Error: ${e.message}`);
 
+            this._isErrorState = true;
             this._panelButton.set_child(new St.Label({
                 style_class: 'bitcoin-error',
                 text: 'BTC -- | --%',
                 y_align: Clutter.ActorAlign.CENTER
             }));
+            
+            // Всегда планируем следующее обновление через 7 секунд при ошибке
             this._scheduleNextUpdate(7);
         }
     }
@@ -98,7 +116,6 @@ export default class BitcoinExtension {
         const dateMenu = Main.panel.statusArea.dateMenu;
         const children = centerBox.get_children();
 
-        // Находим позицию для вставки после даты/времени
         const dateMenuIndex = children.indexOf(dateMenu.container);
         if (dateMenuIndex !== -1) {
             centerBox.insert_child_at_index(this._panelButton, dateMenuIndex + 1);
@@ -125,5 +142,7 @@ export default class BitcoinExtension {
             this._session.abort();
             this._session = null;
         }
+        
+        this._isErrorState = false;
     }
 }
