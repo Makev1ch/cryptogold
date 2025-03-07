@@ -15,15 +15,6 @@ export default class BitcoinExtension {
     }
 
     _updateData() {
-        if (this._panelButton) {
-            const loadingLabel = new St.Label({
-                text: 'BTC = Loading...',
-                style_class: 'loading-text',
-                y_align: Clutter.ActorAlign.CENTER
-            });
-            this._panelButton.set_child(loadingLabel);
-        }
-
         const message = Soup.Message.new(
             'GET',
             'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd&include_24hr_change=true'
@@ -82,7 +73,6 @@ export default class BitcoinExtension {
                         this._isErrorState = false;
                         this._scheduleNextUpdate(180);
                     }
-
                 } catch (e) {
                     log(`Error fetching Bitcoin price: ${e.message}`);
                     if (this._panelButton) {
