@@ -3,7 +3,7 @@ Download via Gnome Extension Store: soon
 ### or
 
 ```
-git clone https://github.com/Makev1ch/cryptogold ~/.local/share/gnome-shell/extensions/usd-rub@makev1ch.github.com
+git clone https://github.com/Makev1ch/cryptogold ~/.local/share/gnome-shell/extensions/cryptogold@makev1ch.github.com
 ```
 
 The command above simply copies the extension to this folder
