@@ -12,6 +12,8 @@ export default class BitcoinExtension {
         this._session = null;
         this._timeoutId = null;
         this._isErrorState = false;
+        this._clickHandlerId = null;
+        this._isFetching = false;
     }
 
     _scheduleNextUpdate(interval) {
@@ -31,6 +33,9 @@ export default class BitcoinExtension {
     }
 
     async _updateData() {
+        if (this._isFetching) return;
+        this._isFetching = true;
+
         try {
             this._session ??= new Soup.Session({ timeout: 10 });
             const message = Soup.Message.new(
@@ -59,30 +64,29 @@ export default class BitcoinExtension {
             const change = response.bitcoin.usd_24h_change.toFixed(2);
             const changeText = `${change}%`;
 
+            if (!this._panelButton) return;
+
             const box = new St.BoxLayout({
                 style_class: 'bitcoin-box',
                 vertical: false,
                 reactive: false
             });
 
-            // Цена BTC с добавлением знака =
             const priceLabel = new St.Label({
                 style_class: 'bitcoin-price',
                 text: `BTC = ${price}`,
                 y_align: Clutter.ActorAlign.CENTER
             });
 
-            // Разделитель
             const separatorLabel = new St.Label({
                 style_class: 'separator-label',
                 text: ' | ',
                 y_align: Clutter.ActorAlign.CENTER
             });
 
-            // Изменение цены
             const changeLabel = new St.Label({
                 style_class: change >= 0 ? 'positive-change' : 'negative-change',
-                text: `${changeText}`,
+                text: changeText,
                 y_align: Clutter.ActorAlign.CENTER
             });
 
@@ -101,6 +105,9 @@ export default class BitcoinExtension {
             console.error(`Error: ${e.message}`);
 
             this._isErrorState = true;
+
+            if (!this._panelButton) return;
+
             const errorBox = new St.BoxLayout({
                 vertical: false,
                 reactive: false
@@ -126,16 +133,35 @@ export default class BitcoinExtension {
             
             this._panelButton.set_child(errorBox);
             this._scheduleNextUpdate(7);
+        } finally {
+            this._isFetching = false;
         }
+    }
+
+    async _onClick() {
+        if (this._isFetching) return Clutter.EVENT_STOP;
+
+        if (this._timeoutId) {
+            GLib.Source.remove(this._timeoutId);
+            this._timeoutId = null;
+        }
+
+        await this._updateData();
+        return Clutter.EVENT_STOP;
     }
 
     enable() {
         this._panelButton = new St.Bin({
             style_class: 'panel-button bitcoin-container',
-            reactive: false,
+            reactive: true,
             x_expand: false,
             x_align: Clutter.ActorAlign.START
         });
+
+        this._clickHandlerId = this._panelButton.connect(
+            'button-press-event',
+            () => this._onClick()
+        );
 
         const centerBox = Main.panel._centerBox;
         const dateMenu = Main.panel.statusArea.dateMenu;
@@ -153,6 +179,11 @@ export default class BitcoinExtension {
 
     disable() {
         if (this._panelButton) {
+            if (this._clickHandlerId) {
+                this._panelButton.disconnect(this._clickHandlerId);
+                this._clickHandlerId = null;
+            }
+            
             Main.panel._centerBox.remove_child(this._panelButton);
             this._panelButton.destroy();
             this._panelButton = null;
@@ -164,7 +195,7 @@ export default class BitcoinExtension {
         }
 
         if (this._session) {
-            this._session.abort();
+            this._session.close();
             this._session = null;
         }
         
