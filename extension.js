@@ -5,13 +5,43 @@ import Clutter from 'gi://Clutter';
 import Soup from 'gi://Soup';
 import GLib from 'gi://GLib';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
+import { Extension } from 'resource:///org/gnome/shell/extensions/extension.js';
 
-export default class BitcoinExtension {
-    constructor() {
-        this._panelButton = null;
+export default class BitcoinExtension extends Extension {
+    enable() {
+        this._panelButton = new St.Bin({
+            style_class: 'panel-button bitcoin-container',
+            reactive: false,
+            x_expand: false,
+            x_align: Clutter.ActorAlign.START
+        });
+
+        const centerBox = Main.panel._centerBox;
+        const dateMenu = Main.panel.statusArea.dateMenu;
+        const children = centerBox.get_children();
+
+        const dateMenuIndex = children.indexOf(dateMenu.container);
+        if (dateMenuIndex !== -1) {
+            centerBox.insert_child_at_index(this._panelButton, dateMenuIndex + 1);
+        } else {
+            centerBox.add_child(this._panelButton);
+        }
+
         this._session = new Soup.Session();
-        this._timeoutId = null;
         this._isErrorState = false;
+        this._updateData();
+        this._scheduleNextUpdate(180);
+    }
+
+    disable() {
+        this._panelButton?.destroy();
+        this._panelButton = null;
+
+        if (this._timeoutId) {
+            GLib.Source.remove(this._timeoutId);
+            this._timeoutId = null;
+        }
+        this._session = null;
     }
 
     _updateData() {
@@ -75,14 +105,6 @@ export default class BitcoinExtension {
                     }
                 } catch (e) {
                     log(`Error fetching Bitcoin price: ${e.message}`);
-                    if (this._panelButton) {
-                        this._panelButton.set_child(new St.Label({
-                            text: 'soon',
-                            style_class: 'error-text',
-                            y_align: Clutter.ActorAlign.CENTER
-                        }));
-                    }
-
                     this._isErrorState = true;
                     this._scheduleNextUpdate(7);
                 }
@@ -98,40 +120,5 @@ export default class BitcoinExtension {
             this._updateData();
             return GLib.SOURCE_CONTINUE;
         });
-    }
-
-    enable() {
-        this._panelButton = new St.Bin({
-            style_class: 'panel-button bitcoin-container',
-            reactive: false,
-            x_expand: false,
-            x_align: Clutter.ActorAlign.START
-        });
-
-        const centerBox = Main.panel._centerBox;
-        const dateMenu = Main.panel.statusArea.dateMenu;
-        const children = centerBox.get_children();
-
-        const dateMenuIndex = children.indexOf(dateMenu.container);
-        if (dateMenuIndex !== -1) {
-            centerBox.insert_child_at_index(this._panelButton, dateMenuIndex + 1);
-        } else {
-            centerBox.add_child(this._panelButton);
-        }
-
-        this._updateData();
-        this._scheduleNextUpdate(180);
-    }
-
-    disable() {
-        if (this._panelButton) {
-            Main.panel._centerBox.remove_child(this._panelButton);
-            this._panelButton.destroy();
-            this._panelButton = null;
-        }
-        if (this._timeoutId) {
-            GLib.Source.remove(this._timeoutId);
-            this._timeoutId = null;
-        }
     }
 }
