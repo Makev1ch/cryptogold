@@ -3,22 +3,12 @@
     padding: 4px 8px;
     border-radius: 12px;
     background-color: rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+    position: relative;
+    transition: background-color 0.3s ease-in-out;
 }
 
 .bitcoin-container:active {
     background-color: rgba(255, 255, 255, 0.2);
-}
-
-.button-pressed {
-    background-color: rgba(255, 255, 255, 0.3);
-    transform: scale(0.95);
-}
-
-.fade-out {
-    transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
-    background-color: transparent;
-    transform: scale(1);
 }
 
 .bitcoin-price {
@@ -26,6 +16,9 @@
     font-size: 12pt;
     font-weight: bold;
     margin-right: 5px;
+    position: relative;
+    display: inline-block;
+    width: auto;
 }
 
 .separator-label {
@@ -54,4 +47,19 @@
     opacity: 0.7;
     font-size: 12pt;
     font-style: italic;
+}
+
+.update-animation {
+    animation: moveSymbol 1s linear forwards;
+}
+
+@keyframes moveSymbol {
+    0% {
+        left: 0;
+        content: "-";
+    }
+    100% {
+        left: 100%;
+        content: "-";
+    }
 }
