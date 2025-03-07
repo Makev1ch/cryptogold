@@ -9,6 +9,11 @@
     background-color: rgba(255, 255, 255, 0.2);
 }
 
+.button-pressed {
+    background-color: rgba(255, 255, 255, 0.3);
+    transition: background-color 0.1s ease-in-out;
+}
+
 .bitcoin-price {
     color: #ffffff;
     font-size: 12pt;
