@@ -65,14 +65,14 @@ export default class BitcoinExtension {
                 reactive: false
             });
 
-            // Цена BTC
+            // Цена BTC с добавлением знака =
             const priceLabel = new St.Label({
                 style_class: 'bitcoin-price',
-                text: `BTC ${price}`,
+                text: `BTC = ${price}`,
                 y_align: Clutter.ActorAlign.CENTER
             });
 
-            // Разделитель с фиксированным цветом
+            // Разделитель
             const separatorLabel = new St.Label({
                 style_class: 'separator-label',
                 text: ' | ',
@@ -95,8 +95,6 @@ export default class BitcoinExtension {
             if (this._isErrorState) {
                 this._isErrorState = false;
                 this._scheduleNextUpdate(300);
-            } else {
-                this._scheduleNextUpdate(300);
             }
             
         } catch (e) {
@@ -110,7 +108,7 @@ export default class BitcoinExtension {
             
             errorBox.add_child(new St.Label({
                 style_class: 'bitcoin-error',
-                text: 'BTC --',
+                text: 'BTC = --',
                 y_align: Clutter.ActorAlign.CENTER
             }));
             
@@ -134,7 +132,9 @@ export default class BitcoinExtension {
     enable() {
         this._panelButton = new St.Bin({
             style_class: 'panel-button bitcoin-container',
-            reactive: false
+            reactive: false,
+            x_expand: false,
+            x_align: Clutter.ActorAlign.START
         });
 
         const centerBox = Main.panel._centerBox;
