@@ -52,7 +52,7 @@ export default class BitcoinExtension {
 
                         const separatorLabel = new St.Label({
                             style_class: 'separator-label',
-                            text: ' | ',
+                            text: '  |  ',
                             y_align: Clutter.ActorAlign.CENTER
                         });
 
@@ -79,7 +79,7 @@ export default class BitcoinExtension {
                     log(`Error fetching Bitcoin price: ${e.message}`);
                     if (this._panelButton) {
                         this._panelButton.set_child(new St.Label({
-                            text: 'Soon',
+                            text: 'soon',
                             style_class: 'error-text',
                             y_align: Clutter.ActorAlign.CENTER
                         }));
