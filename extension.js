@@ -95,10 +95,11 @@ export default class BitcoinExtension {
             box.add_child(changeLabel);
 
             this._panelButton.set_child(box);
-            
+
             if (this._isErrorState) {
                 this._isErrorState = false;
-                this._scheduleNextUpdate(300);
+                // Устанавливаем таймер на обновление каждые 3 минуты (180 секунд)
+                this._scheduleNextUpdate(180);
             }
             
         } catch (e) {
@@ -132,6 +133,7 @@ export default class BitcoinExtension {
             }));
             
             this._panelButton.set_child(errorBox);
+            // Устанавливаем таймер на обновление через 7 секунд в случае ошибки
             this._scheduleNextUpdate(7);
         } finally {
             this._isFetching = false;
@@ -146,7 +148,12 @@ export default class BitcoinExtension {
             this._timeoutId = null;
         }
 
+        // Сначала обновляем курс немедленно
         await this._updateData();
+
+        // Устанавливаем таймер на обновление каждые 3 минуты (180 секунд)
+        this._scheduleNextUpdate(180);
+
         return Clutter.EVENT_STOP;
     }
 
@@ -174,6 +181,7 @@ export default class BitcoinExtension {
             centerBox.add_child(this._panelButton);
         }
 
+        // Сначала загружаем данные при активации расширения
         this._updateData();
     }
 
