@@ -96,6 +96,15 @@ export default class BitcoinExtension {
 
             this._panelButton.set_child(box);
 
+            if (this._panelButton.has_style_class_name('button-pressed')) {
+                this._panelButton.add_style_class_name('fade-out');
+                GLib.timeout_add(GLib.PRIORITY_DEFAULT, 300, () => {
+                    this._panelButton.remove_style_class_name('button-pressed');
+                    this._panelButton.remove_style_class_name('fade-out');
+                    return GLib.SOURCE_REMOVE;
+                });
+            }
+
             if (this._isErrorState) {
                 this._isErrorState = false;
                 this._scheduleNextUpdate(180);
@@ -104,33 +113,6 @@ export default class BitcoinExtension {
         } catch (e) {
             console.error(`Error: ${e.message}`);
             this._isErrorState = true;
-
-            if (!this._panelButton) return;
-
-            const errorBox = new St.BoxLayout({
-                vertical: false,
-                reactive: false
-            });
-            
-            errorBox.add_child(new St.Label({
-                style_class: 'bitcoin-error',
-                text: 'BTC = --',
-                y_align: Clutter.ActorAlign.CENTER
-            }));
-            
-            errorBox.add_child(new St.Label({
-                style_class: 'separator-label',
-                text: ' | ',
-                y_align: Clutter.ActorAlign.CENTER
-            }));
-            
-            errorBox.add_child(new St.Label({
-                style_class: 'bitcoin-error',
-                text: '--%',
-                y_align: Clutter.ActorAlign.CENTER
-            }));
-            
-            this._panelButton.set_child(errorBox);
             this._scheduleNextUpdate(7);
         } finally {
             this._isFetching = false;
@@ -139,26 +121,10 @@ export default class BitcoinExtension {
 
     async _onClick() {
         if (this._isFetching) return Clutter.EVENT_STOP;
-
-        if (this._timeoutId) {
-            GLib.Source.remove(this._timeoutId);
-            this._timeoutId = null;
-        }
-
-        // Добавляем стиль для нажатия
-        this._panelButton.add_style_class_name('button-pressed');
         
+        this._panelButton.add_style_class_name('button-pressed');
         await this._updateData();
-
-        // Сразу обновляем через 3 минуты
         this._scheduleNextUpdate(180);
-
-        // Убираем стиль через 200 мс (эффект нажатия)
-        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 200, () => {
-            this._panelButton.remove_style_class_name('button-pressed');
-            return GLib.SOURCE_REMOVE;
-        });
-
         return Clutter.EVENT_STOP;
     }
 
@@ -186,7 +152,6 @@ export default class BitcoinExtension {
             centerBox.add_child(this._panelButton);
         }
 
-        // Инициализируем данные при активации
         this._updateData();
     }
 
