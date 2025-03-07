@@ -46,7 +46,6 @@ export default class BitcoinExtension {
             
             const response = JSON.parse(new TextDecoder().decode(bytes.get_data()));
             
-            // Проверка корректности ответа
             if (!response?.bitcoin?.usd || !response.bitcoin.usd_24h_change) {
                 throw new Error('Invalid API response format');
             }
@@ -66,24 +65,33 @@ export default class BitcoinExtension {
                 reactive: false
             });
 
+            // Цена BTC
             const priceLabel = new St.Label({
                 style_class: 'bitcoin-price',
                 text: `BTC ${price}`,
                 y_align: Clutter.ActorAlign.CENTER
             });
 
+            // Разделитель с фиксированным цветом
+            const separatorLabel = new St.Label({
+                style_class: 'separator-label',
+                text: ' | ',
+                y_align: Clutter.ActorAlign.CENTER
+            });
+
+            // Изменение цены
             const changeLabel = new St.Label({
                 style_class: change >= 0 ? 'positive-change' : 'negative-change',
-                text: `| ${changeText}`,
+                text: `${changeText}`,
                 y_align: Clutter.ActorAlign.CENTER
             });
 
             box.add_child(priceLabel);
+            box.add_child(separatorLabel);
             box.add_child(changeLabel);
 
             this._panelButton.set_child(box);
             
-            // Если было состояние ошибки - сбрасываем
             if (this._isErrorState) {
                 this._isErrorState = false;
                 this._scheduleNextUpdate(300);
@@ -95,13 +103,30 @@ export default class BitcoinExtension {
             console.error(`Error: ${e.message}`);
 
             this._isErrorState = true;
-            this._panelButton.set_child(new St.Label({
+            const errorBox = new St.BoxLayout({
+                vertical: false,
+                reactive: false
+            });
+            
+            errorBox.add_child(new St.Label({
                 style_class: 'bitcoin-error',
-                text: 'BTC -- | --%',
+                text: 'BTC --',
                 y_align: Clutter.ActorAlign.CENTER
             }));
             
-            // Всегда планируем следующее обновление через 7 секунд при ошибке
+            errorBox.add_child(new St.Label({
+                style_class: 'separator-label',
+                text: ' | ',
+                y_align: Clutter.ActorAlign.CENTER
+            }));
+            
+            errorBox.add_child(new St.Label({
+                style_class: 'bitcoin-error',
+                text: '--%',
+                y_align: Clutter.ActorAlign.CENTER
+            }));
+            
+            this._panelButton.set_child(errorBox);
             this._scheduleNextUpdate(7);
         }
     }
