@@ -1,25 +1,24 @@
 .bitcoin-container {
-    margin-left: 12px;
+    margin-left: 8px;
+    padding: 0 4px;
 }
 
 .bitcoin-price {
     color: #ffffff;
-    font-weight: 500;
+    font-size: 12pt;
 }
 
 .positive-change {
-    color: #4CAF50;
-    font-weight: 500;
-    margin-left: 4px;
+    color: #8ff0a4;
+    font-size: 12pt;
 }
 
 .negative-change {
-    color: #F44336;
-    font-weight: 500;
-    margin-left: 4px;
+    color: #ff7b7b;
+    font-size: 12pt;
 }
 
 .bitcoin-error {
     color: #ffffff;
-    opacity: 0.7;
+    opacity: 0.6;
 }
