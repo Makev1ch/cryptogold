@@ -98,13 +98,11 @@ export default class BitcoinExtension {
 
             if (this._isErrorState) {
                 this._isErrorState = false;
-                // Устанавливаем таймер на обновление каждые 3 минуты (180 секунд)
                 this._scheduleNextUpdate(180);
             }
             
         } catch (e) {
             console.error(`Error: ${e.message}`);
-
             this._isErrorState = true;
 
             if (!this._panelButton) return;
@@ -133,7 +131,6 @@ export default class BitcoinExtension {
             }));
             
             this._panelButton.set_child(errorBox);
-            // Устанавливаем таймер на обновление через 7 секунд в случае ошибки
             this._scheduleNextUpdate(7);
         } finally {
             this._isFetching = false;
@@ -148,11 +145,14 @@ export default class BitcoinExtension {
             this._timeoutId = null;
         }
 
-        // Сначала обновляем курс немедленно
+        this._panelButton.add_style_class_name('button-pressed');
         await this._updateData();
-
-        // Устанавливаем таймер на обновление каждые 3 минуты (180 секунд)
         this._scheduleNextUpdate(180);
+
+        GLib.timeout_add(GLib.PRIORITY_DEFAULT, 200, () => {
+            this._panelButton.remove_style_class_name('button-pressed');
+            return GLib.SOURCE_REMOVE;
+        });
 
         return Clutter.EVENT_STOP;
     }
@@ -181,7 +181,6 @@ export default class BitcoinExtension {
             centerBox.add_child(this._panelButton);
         }
 
-        // Сначала загружаем данные при активации расширения
         this._updateData();
     }
 
