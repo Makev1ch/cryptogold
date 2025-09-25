@@ -1,12 +1,13 @@
 {
     "uuid": "cryptogold@makev1ch.github.com",
-    "name": "CryptoGold(bitcoin rate)",
-    "description": "it just shows the rate of crypto gold(bitcoin) The extension uses coingecko services",
+    "name": "CryptoGold (Bitcoin rate)",
+    "description": "Shows the rate of Bitcoin in USD using CoinGecko services",
     "version": 3,
     "url": "https://github.com/makev1ch/cryptogold",
-  "shell-version": [
+    "shell-version": [
         "47",
-        "48"
+        "48",
+        "49"
     ],
     "stylesheet": "stylesheet.css"
 }
