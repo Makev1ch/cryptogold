@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.cryptogold" path="/org/gnome/shell/extensions/cryptogold/">
+    <key name="position" type="s">
+      <default>'right'</default>
+      <summary>CryptoGold indicator position</summary>
+      <description>
+        Possible values:
+        - 'right-of-clock'
+        - 'left-of-clock'
+        - 'right'
+        - 'left'
+      </description>
+    </key>
+    <key name="position-index" type="i">
+      <default>0</default>
+      <summary>Indicator position index</summary>
+      <description>
+        Position of the indicator relative to other indicators in the panel.
+        0 = at the beginning, -1 = at the end, positive numbers = specific position.
+      </description>
+    </key>
+  </schema>
+  
+</schemalist>
+
+
