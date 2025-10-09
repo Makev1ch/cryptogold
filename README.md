@@ -1,4 +1,4 @@
-Download via Gnome Extension Store: soon
+Download via Gnome Extension Store: https://extensions.gnome.org/extension/7914/cryptogoldbitcoin-rate/
 
 ### or
 
