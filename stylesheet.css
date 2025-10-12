@@ -1,0 +1,31 @@
+.bitcoin-container {
+    padding: 0 0px;
+}
+
+.bitcoin-price {
+    color: white;
+    font-weight: bold;
+}
+
+.separator-label {
+    color: #1BD96A;
+    font-weight: bold;
+}
+
+.positive-change {
+    color: #1BD96A;
+    font-weight: bold;
+}
+
+.negative-change {
+    color: #FF4C4C;
+    font-weight: bold;
+}
+
+.hidden-price {
+    font-weight: bold;
+}
+
+.hidden-price .hidden-text {
+    color: #727272;
+}

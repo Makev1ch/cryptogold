@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <schema id="org.gnome.shell.extensions.cryptogold" path="/org/gnome/shell/extensions/cryptogold/">
+    <key name="position" type="s">
+      <default>"right"</default>
+      <summary>CryptoGold indicator position</summary>
+      <description>
+        Possible values:
+        - 'right-of-clock'
+        - 'left-of-clock'
+        - 'right'
+        - 'left'
+      </description>
+    </key>
+    <key name="position-index" type="i">
+      <default>0</default>
+      <summary>Indicator position index</summary>
+      <description>
+        Position of the indicator relative to other indicators in the panel.
+        0 = at the beginning, -1 = at the end, positive numbers = specific position.
+      </description>
+    </key>
+    <key name="hide-price" type="b">
+      <default>false</default>
+      <summary>Hide Bitcoin price</summary>
+      <description>
+        When enabled, the Bitcoin price will be hidden and API requests will be stopped to save resources.
+        The indicator will show "BTC = Hidden" instead.
+      </description>
+    </key>
+    <key name="use-custom-text" type="b">
+      <default>false</default>
+      <summary>Use custom hidden text</summary>
+      <description>
+        When enabled, use custom text instead of "Hidden" when price is hidden.
+      </description>
+    </key>
+    <key name="custom-hidden-text" type="s">
+      <default>"Hidden"</default>
+      <summary>Custom hidden text</summary>
+      <description>
+        Custom text to display instead of "Hidden" when price is hidden.
+      </description>
+    </key>
+    <key name="api-provider" type="s">
+      <default>"coingecko"</default>
+      <summary>API Provider</summary>
+      <description>
+        Choose the API provider for Bitcoin price data.
+        Possible values: 'coingecko', 'binance', 'bitstamp', 'gateio', 'mexc', 'huobi', 'hitbtc', 'bybit'
+      </description>
+    </key>
+    <key name="update-interval" type="i">
+      <default>180</default>
+      <summary>Update interval in seconds</summary>
+      <description>
+        How often to update the Bitcoin price (in seconds).
+        Minimum values: CoinGecko=30s, Binance=5s, Bitstamp=1s, Gate.io=1s, MEXC=1s, Huobi=1s, HitBTC=1s, Bybit=1s
+      </description>
+    </key>
+  </schema>
+  
+</schemalist>
+
+
