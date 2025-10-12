@@ -7,10 +7,10 @@ A GNOME Shell extension that displays the current Bitcoin price in USD with 24-h
 - Real-time Bitcoin price updates from multiple API providers
 - 24-hour change percentage with color coding (green/red)
 - Multiple positioning options (right/left of clock, panel sides)
-- **NEW**: Custom position index control
-- **NEW**: Hide price functionality with context menu
-- **NEW**: Resource saving - stops API requests when hidden
-- **NEW**: Custom hidden text (e.g., "HODL", "🚀")
+- Custom position index control
+- Hide price functionality with context menu
+- Resource saving - stops API requests when hidden
+- Custom hidden text (e.g., "HODL", "🚀")
 - **NEW**: Multiple API providers support
 - Automatic error handling with retry mechanism
 
