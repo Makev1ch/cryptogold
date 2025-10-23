@@ -1,29 +1,39 @@
 # CryptoGold - Bitcoin Rate Indicator
 
-A GNOME Shell extension that displays the current Bitcoin price in USD with 24-hour change percentage.
+A GNOME Shell extension that displays the current Bitcoin price with real-time updates, fiat currency conversion, and multiple data sources.
 
 ## Features
 
-- Real-time Bitcoin price updates from multiple API providers
-- 24-hour change percentage with color coding (green/red)
-- Multiple positioning options (right/left of clock, panel sides)
-- **NEW**: Custom position index control
-- **NEW**: Hide price functionality with context menu
-- **NEW**: Resource saving - stops API requests when hidden
-- **NEW**: Custom hidden text (e.g., "HODL", "🚀")
-- **NEW**: Multiple API providers support
-- Automatic error handling with retry mechanism
+- **Real-time Bitcoin price** from 8 different API providers
+- **Fiat currency conversion** to 50+ local currencies
+- **24-hour change percentage** with color coding (green/red)
+- **Multiple positioning options** (right/left of clock, panel sides)
+- **Custom position index control** for precise placement
+- **Hide price functionality** with context menu
+- **Resource saving** - stops API requests when hidden
+- **Custom hidden text** (e.g., "HODL", "🚀")
+- **Icon-based context menu** with toggle, refresh, and settings
+- **Automatic error handling** with retry mechanism
 
-## Supported API Providers
+## Supported Bitcoin API Providers
 
-- **CoinGecko** (Default) - Free tier, 30s minimum interval
-- **Binance.US** - Fast updates, 5s minimum interval
+- **CoinGecko** (Default) - Free tier, 5min minimum interval
+- **Binance.US** - Fast updates, 5s minimum interval  
 - **Bitstamp** - Reliable data, 1s minimum interval
 - **Gate.io** - Global exchange, 1s minimum interval
 - **MEXC** - High performance, 1s minimum interval
 - **Huobi** - Professional trading data, 1s minimum interval
 - **HitBTC** - European exchange, 1s minimum interval
 - **Bybit** - Derivatives and spot trading, 1s minimum interval
+
+## Supported Fiat Currency Providers
+
+- **CoinGecko** - 5min updates, 50+ currencies
+- **ExchangeRate** - 24h updates, 165+ currencies  
+- **fawazahmed0** - 1h updates, 340+ currencies
+- **FloatRates** - 1h updates, 146 currencies
+- **Frankfurter** - 1h updates, 30 ECB currencies
+- **WoXy-Sensei** - 1h updates, ECB currencies
 
 ## Installation
 
@@ -40,20 +50,32 @@ Restart GNOME Shell (Alt+F2 → restart in X11, or logout/login in Wayland).
 ## Configuration
 
 In GNOME Extensions app configure:
-- **Indicator position**: Choose placement (right/left of clock)
+
+### Display Settings
+- **Indicator position**: Choose placement (right/left of clock, panel sides)
 - **Position index**: Fine-tune position (0 = default, -1 = end)
 - **Hide Bitcoin Price**: Stop API requests to save resources
 - **Custom Hidden Text**: Any text instead of "Hidden"
-- **API Provider**: Choose from 8 different data sources
+
+### API Settings  
+- **API Provider**: Choose from 8 different Bitcoin data sources
 - **Update Interval**: Set refresh rate (minimum varies by provider)
 
-### Context Menu
+### Currency Settings
+- **Currency Exchange API**: Choose from 6 fiat conversion providers
+- **Display Currency**: Select from 50+ supported currencies
 
-Click the Bitcoin indicator to hide/show price with custom text.
+## Context Menu
+
+Click the Bitcoin indicator to access:
+- **👁️ Eye icon**: Toggle price visibility
+- **🔄 Refresh icon**: Force update
+- **⚙️ Settings icon**: Open preferences
 
 ## Technical Details
 
-- Updates every 3 minutes (7 seconds on errors)
-- Supports 8 different API providers
-- Follows GNOME Shell extension guidelines
-- Smart rate limiting based on provider capabilities
+- **Smart caching**: Provider-specific update intervals (1s to 24h)
+- **Error handling**: Automatic retry with exponential backoff
+- **Resource efficient**: Stops requests when hidden
+- **GNOME guidelines compliant**: Follows extension best practices
+- **Multi-provider fallback**: Automatic failover between APIs
